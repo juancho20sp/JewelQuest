@@ -206,8 +206,8 @@ public class GameBoard extends JPanel{
     private Jewel getJewel(int id) throws JewelQuestException{
         switch(id){
             case -2:
-                //return new EmptyJewel(config.getBackgroundColor());
-                return new BlackJewel();
+                return new EmptyJewel(config.getBackgroundColor());
+                //return new BlackJewel();
             case -1:
                 return new BlackJewel();
             case 1:
@@ -257,14 +257,18 @@ public class GameBoard extends JPanel{
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if(board[i][j] == event.getSource()){
-                    logicBoard.deleteJewels(i, j, logicBoard.getBoard()[i][j]);
+                    logicBoard.blackClicked(i, j, logicBoard.getBoard()[i][j]);
                 }
             }
 
         }
 
         this.refresh();
+
+        System.out.println(logicBoard.jewelsToDestroy());
     }
+
+
 
     /**
      * Method for refreshing the board
