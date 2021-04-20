@@ -81,6 +81,16 @@ public class LogicGameBoard {
         if ((py > 0) && board[px][py - 1] == jewelType){
             deleteJewels(px, py - 1, jewelType);
         }
+
+        // Upper left diagonal
+        if ((px > 0) && (py > 0) && board[px - 1][py - 1] == jewelType){
+            deleteJewels(px - 1, py - 1, jewelType);
+        }
+
+        // Upper right diagonal
+        if ((px < (this.width - 1) && (py > 0) && (board[px + 1][py - 1]) == jewelType)){
+            deleteJewels(px + 1, py - 1, jewelType);
+        }
     }
 
     /**

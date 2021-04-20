@@ -1,5 +1,6 @@
 package presentacion;
 
+import dominio.GameConfiguration;
 import dominio.JewelQuestException;
 import dominio.Jewels.*;
 import dominio.LogicGameBoard;
@@ -30,7 +31,7 @@ public class GameBoard extends JPanel{
 
     private Random random;
 
-    private ModifyBoard config;
+    private GameConfiguration config;
 
     private static LogicGameBoard logicBoard;
     //private Color boardColor = ModifyBoard.boardColor;
@@ -41,10 +42,12 @@ public class GameBoard extends JPanel{
      * Constructor of the GameBoard class
      * @param height Height of the main frame
      * @param width Width of the main frame
+     * @param config The object that handles all the modifications of the board
      */
-    public GameBoard(int width, int height){
+    public GameBoard(int width, int height, GameConfiguration config){
         this.width = width - 18;
         this.height = height - 38;
+        this.config = config;
 
         new JPanel();
 
@@ -68,7 +71,9 @@ public class GameBoard extends JPanel{
     /**
      * Constructor for resuming the game
      */
-    public GameBoard(){
+    public GameBoard(GameConfiguration config){
+        this.config = config;
+
         new JPanel();
         this.prepareElementsBoard();
     }
@@ -100,6 +105,7 @@ public class GameBoard extends JPanel{
         this.upperPanel.setBounds(0, 0, this.width, 30);
         this.upperPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         this.upperPanel.setLayout(new GridLayout(1, 4));
+        this.upperPanel.setBackground(this.config.getBackgroundColor());
 
         // Buttons
         this.mainMenuButton = new JButton("Menú principal");
@@ -155,13 +161,13 @@ public class GameBoard extends JPanel{
 
         // Panel
         this.boardPanel = new JPanel();
-        //this.boardPanel.setBackground(config.getColor());
-        this.boardPanel.setAlignmentX(SwingConstants.CENTER);
+        this.boardPanel.setBackground(this.config.getBackgroundColor());
         this.boardPanel.setBounds(0, 30, this.width, this.height - 30);
+        //this.boardPanel.setAlignmentX(SwingConstants.CENTER);
 
         // Box dimensions
-        int boxWidth = this.width / this.cols;
-        int boxHeight = (this.height - 11) / this.rows;
+        int boxWidth = (this.width) / this.cols;
+        int boxHeight = (this.height - 40) / this.rows;
 
         // Layout
         this.boardPanel.setLayout(null);
@@ -265,9 +271,17 @@ public class GameBoard extends JPanel{
      * @return
      */
     private void refresh(){
+        this.upperPanel.setBackground(this.config.getBackgroundColor());
+        repaint();
+
+        //remove(upperPanel);
         remove(boardPanel);
+        //this.createUpperPanel();
         this.createGameBoardPanel();
         repaint();
+
+
+        this.boardPanel.setBackground(this.config.getBackgroundColor());
     }
 
     /**
@@ -277,7 +291,7 @@ public class GameBoard extends JPanel{
     private void restartGame(){
         logicBoard = null;
 
-        new GameBoard(this.width, this.height);
+        new GameBoard(this.width, this.height, this.config);
 
         this.refresh();
     }

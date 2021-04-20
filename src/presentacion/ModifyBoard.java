@@ -16,14 +16,13 @@ public class ModifyBoard extends JPanel{
 
     private GameConfiguration config;
 
-
     /**
      * Constructor for the ModifyBoard class
      */
-    public ModifyBoard(JFrame frame){
+    public ModifyBoard(JFrame frame, GameConfiguration config){
         this.frame = frame;
 
-        this.config = new GameConfiguration();
+        this.config = config;
 
         this.prepareBoard();
 
@@ -44,7 +43,7 @@ public class ModifyBoard extends JPanel{
         this.configPanel = new JPanel();
         this.configPanel.setSize(frameSize.width, frameSize.height);
         this.configPanel.setLayout(new GridLayout(7, 3));
-        this.configPanel.setBackground(Color.ORANGE);
+        this.configPanel.setBackground(this.config.getBackgroundColor());
 
         // Label
         this.title = new JLabel("Seleccione el color de fondo del tablero:");
@@ -88,15 +87,24 @@ public class ModifyBoard extends JPanel{
      */
     private void selectColor(){
         JColorChooser chooser = new JColorChooser();
-        config.setBackgroundColor(chooser.showDialog(null, "Seleccione un color", Color.red));
+        this.config.setBackgroundColor(chooser.showDialog(null, "Seleccione un color", Color.ORANGE));
+
+        this.refresh();
     }
 
     /**
      * Method for going back
-     * @return
      */
     private void goBack(){
         JewelQuestGUI.selectCard(JewelQuestGUI.MAIN_MENU);
+    }
+
+    /**
+     * Method for refreshing the view
+     */
+    private void refresh(){
+        this.configPanel.setBackground(this.config.getBackgroundColor());
+
     }
 
 

@@ -1,5 +1,7 @@
 package presentacion;
 
+import dominio.GameConfiguration;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,7 +11,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class JewelQuestGUI extends JFrame{
-    JFrame frame;
     JPanel menuPanel;
     JLabel menuLabel;
     JButton newGameButton;
@@ -30,13 +31,20 @@ public class JewelQuestGUI extends JFrame{
     final static String MODIFY_BOARD = "modificar tablero";
 
     // Game board
-    GameBoard board;
+    private GameBoard board;
+
+    // Config
+    private GameConfiguration config;
+
 
     /**
      * Constructor of the JewelQuestGUI class
      */
     public JewelQuestGUI(){
         cards = new JPanel(new CardLayout());
+
+        // Config
+        this.config = new GameConfiguration(Color.ORANGE);
 
         this.prepareElements();
     }
@@ -95,7 +103,7 @@ public class JewelQuestGUI extends JFrame{
         this.menuPanel = new JPanel();
         this.menuPanel.setSize(frameSize.width - 50, frameSize.height - 50);
         this.menuPanel.setLayout(new GridLayout(7, 3));
-        this.menuPanel.setBackground(Color.ORANGE);
+        this.menuPanel.setBackground(this.config.getBackgroundColor());
 
         // Label
         this.menuLabel = new JLabel("Menú principal");
@@ -191,7 +199,7 @@ public class JewelQuestGUI extends JFrame{
      * Method for creating a new game
      */
     private void newGame(){
-        board = new GameBoard(getWidth(), getHeight());
+        board = new GameBoard(getWidth(), getHeight(), this.config);
 
         this.createMenu();
         this.prepareMenuActions();
@@ -204,7 +212,7 @@ public class JewelQuestGUI extends JFrame{
      * Method for resuming the game
      */
     private void resumeGame(){
-        board = new GameBoard();
+        board = new GameBoard(this.config);
         selectCard(GAME_BOARD);
     }
 
@@ -243,7 +251,17 @@ public class JewelQuestGUI extends JFrame{
      * Method for saving the current game
      */
     private void saveGame(){
-        JOptionPane.showMessageDialog(null, "Guardar juego");
+        System.out.println("Repainting");
+        //remove(cards);
+
+        System.out.println(this.config.getBackgroundColor().toString());
+
+        // Menu
+        this.menuPanel.setBackground(this.config.getBackgroundColor());
+
+
+
+        /*JOptionPane.showMessageDialog(null, "Guardar juego");
 
         // JFileChooser
         JFileChooser chooser = new JFileChooser();
@@ -264,7 +282,7 @@ public class JewelQuestGUI extends JFrame{
             case JFileChooser.CANCEL_OPTION:
                 JOptionPane.showMessageDialog(null, "Cancel everything!");
                 break;
-        }
+        }*/
     }
 
     /**
@@ -301,16 +319,16 @@ public class JewelQuestGUI extends JFrame{
      * Method for modifying the board
      */
     private void modifyBoard(){
-        ModifyBoard modify = new ModifyBoard(this);
+        ModifyBoard modify = new ModifyBoard(this, this.config);
 
         this.prepareMenuActions();
 
         cards.add(modify, MODIFY_BOARD);
 
-        //this.repaint();
-
         //this.switchPanel(board);
         selectCard(MODIFY_BOARD);
+
+        this.refresh();
     }
 
     /**
@@ -343,6 +361,12 @@ public class JewelQuestGUI extends JFrame{
         cl.show(cards, card);
     }
 
+    /**
+     * Method for refreshing the menu
+     */
+    private void refresh(){
+        this.menuPanel.setBackground(this.config.getBackgroundColor());
+    }
 
     public boolean isMenuCreated() {
         return menuCreated;
