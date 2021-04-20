@@ -147,15 +147,17 @@ public class LogicGameBoard {
      */
     public void blackClicked(int x, int y, int jewelType){
         if (this.board[x][y] == -1){
-            this.deleteJewels(x, y, -1);
+            if (this.jewelsToDestroy() > 2){
+                this.deleteJewels(x, y, -1);
 
-            // Make them fall
-            this.makeThemFall();
+                // Make them fall
+                this.makeThemFall();
 
-            // New Jewels
-            this.rePopulateBoard();
+                // New Jewels
+                this.rePopulateBoard();
 
-            this.printBoard();
+                this.printBoard();
+            }
         } else {
             this.resetBoard();
             this.deleteJewels(x, y, jewelType);
