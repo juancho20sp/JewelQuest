@@ -64,6 +64,10 @@ public class GameBoard extends JPanel{
         // Logic board
         logicBoard = new LogicGameBoard(this.cols, this.rows);
 
+        System.out.println("\n\n");
+        logicBoard.printBoard();
+        System.out.println("\n\n");
+
         // Create the jewel board
         //board = new Jewel[this.rows][this.cols];
 
@@ -110,24 +114,17 @@ public class GameBoard extends JPanel{
         this.upperPanel.setBackground(this.config.getBackgroundColor());
 
         // Buttons
-        this.mainMenuButton = new JButton("Menú principal");
-        this.restartButton = new JButton("Reiniciar juego");
+        this.createUpperPanelButtons();
 
         // Labels
-        this.movementsLabel = new JLabel("Movimientos: " + logicBoard.getMovements(), SwingConstants.CENTER);
-        this.pointsLabel = new JLabel("Puntos: " + + logicBoard.getPoints(), SwingConstants.CENTER);
+        this.createUpperPanelLabels();
 
         // Actions
         this.createUpperPanelActions();
 
         // Add
-        this.upperPanel.add(mainMenuButton);
-        this.upperPanel.add(restartButton);
-        this.upperPanel.add(movementsLabel);
-        this.upperPanel.add(pointsLabel);
+        this.addElementsToUpperPanel();
 
-        // Add panel
-        add(upperPanel);
     }
 
     /**+
@@ -150,6 +147,37 @@ public class GameBoard extends JPanel{
                 restartGame();
             }
         });
+    }
+
+    /**
+     * Method for creating the upper panel buttons
+     */
+    private void createUpperPanelButtons(){
+        this.mainMenuButton = new JButton("Menú principal");
+        this.restartButton = new JButton("Reiniciar juego");
+    }
+
+    /**
+     * Method for creating the upper panel labels
+     */
+    private void createUpperPanelLabels(){
+        this.setMovementsLabel(new JLabel("Movimientos: " + logicBoard.getMovements(), SwingConstants.CENTER));
+        this.setPointsLabel( new JLabel("Puntos: " + + logicBoard.getPoints(),
+                SwingConstants.CENTER));
+    }
+
+    /**
+     * Method for adding elements to the upper panel
+     */
+    private void addElementsToUpperPanel(){
+        // Elements
+        this.upperPanel.add(mainMenuButton);
+        this.upperPanel.add(restartButton);
+        this.upperPanel.add(this.getMovementsLabel());
+        this.upperPanel.add(this.getPointsLabel());
+
+        // Add panel
+        add(upperPanel);
     }
 
     /**
@@ -320,25 +348,22 @@ public class GameBoard extends JPanel{
     }
 
 
-    /**
-     * Method for setting the first position to switch
-     */
-
 
     /**
      * Method for refreshing the board
-     * @return
      */
     private void refresh(){
-        remove(upperPanel);
+        //remove(upperPanel);
         remove(boardPanel);
 
-        //this.createUpperPanel();
+        this.createUpperPanel();
 
-        //this.createGameBoardPanel();
-        this.prepareElementsBoard();
+        //this.createUpperPanelLabels();
+        //this.addElementsToUpperPanel();
+        this.createGameBoardPanel();
+        //this.prepareElementsBoard();
         repaint();
-        this.movementsLabel = new JLabel("test");
+        //this.movementsLabel = new JLabel("test");
 
         //this.upperPanel.setBackground(this.config.getBackgroundColor());
         //repaint();
@@ -369,8 +394,6 @@ public class GameBoard extends JPanel{
         JewelQuestGUI.selectCard(JewelQuestGUI.MAIN_MENU);
     }
 
-
-
     public void setGameRunning(boolean gameRunning) {
         isGameRunning = gameRunning;
     }
@@ -381,5 +404,21 @@ public class GameBoard extends JPanel{
 
     public void setFirstCellSelected(boolean firstCellSelected) {
         this.firstCellSelected = firstCellSelected;
+    }
+
+    public JLabel getMovementsLabel() {
+        return movementsLabel;
+    }
+
+    public void setMovementsLabel(JLabel movementsLabel) {
+        this.movementsLabel = movementsLabel;
+    }
+
+    public JLabel getPointsLabel() {
+        return pointsLabel;
+    }
+
+    public void setPointsLabel(JLabel pointsLabel) {
+        this.pointsLabel = pointsLabel;
     }
 }

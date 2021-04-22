@@ -1,5 +1,8 @@
 package dominio;
 
+import presentacion.JewelQuestGUI;
+
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -15,6 +18,7 @@ public class LogicGameBoard {
 
     private int[][] board;
     private int[][] boardCopy;
+    private int[][] winBoard;
 
     private Random random;
 
@@ -30,6 +34,7 @@ public class LogicGameBoard {
         this.height = height;
 
         this.board = new int[width][height];
+        this.winBoard = new int[width][height];
         this.random = new Random();
 
         this.createBoard();
@@ -42,6 +47,9 @@ public class LogicGameBoard {
         for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
                 this.board[i][j] = random.nextInt(4) + 1;
+
+                // Win board
+                this.winBoard[i][j] = 0;
             }
         }
 
@@ -72,6 +80,9 @@ public class LogicGameBoard {
         // If the color is black, delete the jewel
         if (jewelType == -1){
             board[px][py] = -2;
+
+            // Win board
+
         }
 
         // Delete adjacent positions
@@ -114,98 +125,6 @@ public class LogicGameBoard {
         if ((px < (this.width - 1)) && (py < (this.height - 1)) && board[px + 1][py + 1] == jewelType) {
             deleteJewels(px + 1, py + 1, jewelType);
         }*/
-    }
-
-    /**
-     * Method for deleting similar and left jewels
-     * @param px 'X' position of the jewel
-     * @param py 'Y' position of the jewel
-     * @param jewelType Type of the jewel
-     */
-    public void deleteLeftJewels(int px, int py, int jewelType){
-        // The jewels to delete will turn black
-        if (jewelType != -1){
-            board[px][py] = -1;
-        }
-
-        // If the color is black, delete the jewel
-        /*if (jewelType == -1){
-            board[px][py] = -2;
-        }*/
-
-        // Left
-        if ((px > 0) && board[px -1][py] == jewelType){
-            deleteLeftJewels(px - 1, py, jewelType);
-        }
-    }
-
-    /**
-     * Method for deleting similar and right jewels
-     * @param px 'X' position of the jewel
-     * @param py 'Y' position of the jewel
-     * @param jewelType Type of the jewel
-     */
-    public void deleteRightJewels(int px, int py, int jewelType){
-        // The jewels to delete will turn black
-        if (jewelType != -1){
-            board[px][py] = -1;
-        }
-
-        // If the color is black, delete the jewel
-        /*if (jewelType == -1){
-            board[px][py] = -2;
-        }*/
-
-        // Right
-        if ((px < (this.width - 1)) && board[px + 1][py] == jewelType){
-            deleteRightJewels(px + 1, py, jewelType);
-        }
-    }
-
-    /**
-     * Method for deleting similar and upper jewels
-     * @param px 'X' position of the jewel
-     * @param py 'Y' position of the jewel
-     * @param jewelType Type of the jewel
-     */
-    public void deleteUpperJewels(int px, int py, int jewelType){
-        // The jewels to delete will turn black
-        if (jewelType != -1){
-            board[px][py] = -1;
-        }
-
-        // If the color is black, delete the jewel
-        /*if (jewelType == -1){
-            board[px][py] = -2;
-        }*/
-
-        // Up
-        if ((py > 0) && board[px][py - 1] == jewelType){
-            deleteUpperJewels(px, py - 1, jewelType);
-        }
-    }
-
-    /**
-     * Method for deleting similar and lower jewels
-     * @param px 'X' position of the jewel
-     * @param py 'Y' position of the jewel
-     * @param jewelType Type of the jewel
-     */
-    public void deleteLowerJewels(int px, int py, int jewelType){
-        // The jewels to delete will turn black
-        if (jewelType != -1){
-            board[px][py] = -1;
-        }
-
-        // If the color is black, delete the jewel
-        /*if (jewelType == -1){
-            board[px][py] = -2;
-        }*/
-
-        // Down
-        if ((py < (this.height - 1)) && board[px][py + 1] == jewelType){
-            deleteLowerJewels(px, py + 1, jewelType);
-        }
     }
 
 
@@ -251,7 +170,6 @@ public class LogicGameBoard {
             this.resetBoard();
             this.board[x][y] = -1;
         }
-
     }
 
     /**
@@ -276,6 +194,38 @@ public class LogicGameBoard {
 
         return (xDiff == 1 || yDiff == 1) && xDiff != yDiff && (xDiff < 2) && (yDiff < 2);
     }
+
+    /**
+     * Method for verifying gold positions
+     * @return true if the player won, false otherwise
+     */
+    private boolean verifyWinBoard(){
+        int result = 0;
+
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                if(this.board[i][j] == -2){
+                    this.winBoard[i][j] = 1;
+                }
+
+                if(this.getWinBoard()[i][j] == 1){
+                    result++;
+                }
+            }
+        }
+
+        System.out.println("\n\n");
+
+        for(int[] row : this.getWinBoard()){
+            System.out.println(Arrays.toString(row));
+        }
+
+        System.out.println("\n\n");
+
+        return result == (this.width * this.height);
+    }
+
+
 
     /**
      * Method for switching jewels
@@ -312,25 +262,19 @@ public class LogicGameBoard {
      * @param jewelType The jewel type
      */
     public void blackClicked(int x, int y, int jewelType){
+        boolean winner = false;
+
         // First jewel
         int x1 = this.getFirstCell()[0];
         int y1 = this.getFirstCell()[1];
 
-        //this.deleteJewels(x1, y1, this.board[x1][y1]);
-
-        /*this.deleteLeftJewels(x1, y1, this.board[x1][y1]);
-        this.deleteRightJewels(x1, y1, this.board[x1][y1]);
-        this.deleteUpperJewels(x1, y1, this.board[x1][y1]);
-        this.deleteLowerJewels(x1, y1, this.board[x1][y1]);*/
+        this.deleteJewels(x1, y1, this.board[x1][y1]);
 
         // Second jewel
         int x2 = this.getSecondCell()[0];
         int y2 = this.getSecondCell()[1];
+
         this.deleteJewels(x2, y2, this.board[x2][y2]);
-        /*this.deleteLeftJewels(x2, y2, this.board[x2][y2]);
-        this.deleteRightJewels(x2, y2, this.board[x2][y2]);
-        this.deleteUpperJewels(x2, y2, this.board[x2][y2]);
-        this.deleteLowerJewels(x2, y2, this.board[x2][y2]);*/
 
         this.printBoard();
 
@@ -346,6 +290,9 @@ public class LogicGameBoard {
                 // Delete
                 this.deleteJewels(x, y, -1);
 
+                // Verify win board
+                winner = this.verifyWinBoard();
+
                 // Make them fall
                 this.makeThemFall();
 
@@ -358,12 +305,24 @@ public class LogicGameBoard {
                 //System.out.println("Pts: " + this.getPoints());
             } else {
                 this.undoSwitchPositions();
-                //this.resetBoard();
+                this.resetBoard();
                 this.printBoard();
             }
         } else {
             this.resetBoard();
             //this.deleteJewels(x, y, jewelType);
+        }
+
+        if(winner){
+            JOptionPane.showMessageDialog(null,
+                    "¡Felicidades! Ha ganado el juego" + "\nMovimientos: " + this.getMovements()
+            + "\nPuntos: " + this.getPoints());
+
+            // Set game won
+            JewelQuestGUI.gameWon = true;
+
+            // Go to main menu
+            JewelQuestGUI.selectCard(JewelQuestGUI.MAIN_MENU);
         }
     }
 
@@ -472,5 +431,9 @@ public class LogicGameBoard {
     public void setSecondCell(int[] secondCell) {
         this.secondCell = secondCell;
         System.out.println("Second cell: " + secondCell[0] + " - " + secondCell[1]);
+    }
+
+    public int[][] getWinBoard() {
+        return winBoard;
     }
 }

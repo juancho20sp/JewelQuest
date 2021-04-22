@@ -26,7 +26,8 @@ public class JewelQuestGUI extends JFrame{
     // Cards
     public static JPanel cards;
     //public static Component toDelete;
-    final static String MAIN_MENU = "main menu";
+    public static boolean gameWon = false;
+    public final static String MAIN_MENU = "main menu";
     final static String GAME_BOARD = "game board";
     final static String MODIFY_BOARD = "modificar tablero";
 
@@ -121,7 +122,7 @@ public class JewelQuestGUI extends JFrame{
         // Add the buttons
         this.menuPanel.add(this.menuLabel);
 
-        if (GameBoard.gameRunning){
+        if (GameBoard.gameRunning && !gameWon){
             this.menuPanel.add(resumeGameButton);
         } else {
             this.menuPanel.add(newGameButton);
