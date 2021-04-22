@@ -52,14 +52,9 @@ public class GameBoard extends JPanel{
 
         new JPanel();
 
-        //this.mainPanel = new JPanel();
-
         // Rows and cols
         this.rows = this.config.getHeight();
         this.cols = this.config.getWidth();
-
-        System.out.println("Height: " + this.config.getHeight());
-        System.out.println("width: " + this.config.getWidth());
 
         gameRunning = true;
         this.setGameRunning(false);
@@ -69,15 +64,12 @@ public class GameBoard extends JPanel{
         this.random = new Random();
 
         // Logic board
-        System.out.println("GUI filas: " + this.rows + " cols: " + this.cols);
         logicBoard = new LogicGameBoard(this.cols, this.rows);
 
         System.out.println("\n\n");
         logicBoard.printBoard();
         System.out.println("\n\n");
 
-        // Create the jewel board
-        //board = new Jewel[this.rows][this.cols];
 
         this.prepareElementsBoard();
     }
@@ -108,9 +100,6 @@ public class GameBoard extends JPanel{
 
         // Board panel
         this.createGameBoardPanel();
-
-        // Add
-        //add(mainPanel);
     }
 
     /**
@@ -215,8 +204,6 @@ public class GameBoard extends JPanel{
         // Fill board
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
-                System.out.println(i + " - " + j);
-
                 // Select and add the jewel
                 try {
                     this.insertJewellToBoard(i, j, this.getJewel(logicBoard.getBoard()[i][j]));
@@ -297,7 +284,6 @@ public class GameBoard extends JPanel{
     private void handleClickOnJewel(MouseEvent event){
         int[] position = new int[2];
 
-
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if(board[i][j] == event.getSource()){
@@ -337,7 +323,6 @@ public class GameBoard extends JPanel{
         } else {
             JOptionPane.showMessageDialog(null, JewelQuestException.NON_ADJACENT_CELLS);
         }
-        System.out.println("Adyacentes: " + logicBoard.verifyAdjacency());
 
         this.refresh();
     }
@@ -360,36 +345,15 @@ public class GameBoard extends JPanel{
      * Method for refreshing the board
      */
     private void refresh(){
-        //remove(upperPanel);
-        //remove(boardPanel);
         removeAll();
         revalidate();
         repaint();
 
-        //this.boardPanel.invalidate();
-        //this.boardPanel.validate();
-        //this.createUpperPanel();
-
-        //this.createUpperPanelLabels();
-        //this.addElementsToUpperPanel();
-        //this.createGameBoardPanel();
-        //this.boardPanel.setLayout(new GridLayout(this.rows, this.cols));
         this.prepareElementsBoard();
-        //repaint();
-        //this.movementsLabel = new JLabel("test");
-
-        //this.upperPanel.setBackground(this.config.getBackgroundColor());
-        //repaint();
-
-//        repaint();
-
-
-       // this.boardPanel.setBackground(this.config.getBackgroundColor());
     }
 
     /**
      * Method for restarting the game
-     * @return
      */
     private void restartGame(){
         logicBoard = null;
@@ -401,7 +365,6 @@ public class GameBoard extends JPanel{
 
     /**
      * Method for going back to the main menu
-     * @return
      */
     private void toggleMainMenu(){
         JewelQuestGUI.selectCard(JewelQuestGUI.MAIN_MENU);

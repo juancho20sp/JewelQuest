@@ -33,8 +33,6 @@ public class LogicGameBoard {
         this.width = width;
         this.height = height;
 
-        System.out.println("columnas: " + this.width + " filas: " + this.height);
-
         this.board = new int[height][width];
         this.winBoard = new int[height][width];
         this.random = new Random();
@@ -82,9 +80,6 @@ public class LogicGameBoard {
         // If the color is black, delete the jewel
         if (jewelType == -1){
             board[px][py] = -2;
-
-            // Win board
-
         }
 
         // Delete adjacent positions
@@ -174,14 +169,6 @@ public class LogicGameBoard {
         }
     }
 
-    /**
-     * Method prepare for destroy
-     * @param x 'X' position of the jewel to be destroyed
-     * @param y 'Y' position of the jewell to be destroyed
-     */
-    private void prepareForDestroy(int x, int y){
-        this.board[x][y] = -1;
-    }
 
     /**
      * Method for verifying if the cells are adjacent
@@ -278,10 +265,7 @@ public class LogicGameBoard {
 
         this.deleteJewels(x2, y2, this.board[x2][y2]);
 
-        this.printBoard();
-
         if (this.board[x][y] == -1){
-            System.out.println("To destroy: " + this.jewelsToDestroy());
             if (this.jewelsToDestroy() > 2){
                 // Points
                 this.setPoints(this.getPoints() + this.jewelsToDestroy());
@@ -301,10 +285,6 @@ public class LogicGameBoard {
                 // New Jewels
                 this.rePopulateBoard();
 
-                this.printBoard();
-
-                //System.out.println("Mov: " + this.getMovements());
-                //System.out.println("Pts: " + this.getPoints());
             } else {
                 this.undoSwitchPositions();
                 this.resetBoard();
@@ -312,7 +292,6 @@ public class LogicGameBoard {
             }
         } else {
             this.resetBoard();
-            //this.deleteJewels(x, y, jewelType);
         }
 
         if(winner){
@@ -341,7 +320,6 @@ public class LogicGameBoard {
                     }
                 }
             }
-
         }
     }
 
@@ -356,20 +334,6 @@ public class LogicGameBoard {
         }
     }
 
-    /**
-     * Method for verifying if there are black jewels on the board
-     */
-    public boolean areBlacksOnBoard(){
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.getBoard()[i][j] == -1){
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 
     /**
      * Method for copying the board
@@ -385,8 +349,6 @@ public class LogicGameBoard {
 
         this.setBoardCopy(temp);
     }
-
-
 
     public int[][] getBoard() {
         return board;
@@ -422,8 +384,6 @@ public class LogicGameBoard {
 
     public void setFirstCell(int[] firstCell) {
         this.firstCell = firstCell;
-
-        System.out.println("First cell: " + firstCell[0] + " - " + firstCell[1]);
     }
 
     public int[] getSecondCell() {
@@ -432,7 +392,6 @@ public class LogicGameBoard {
 
     public void setSecondCell(int[] secondCell) {
         this.secondCell = secondCell;
-        System.out.println("Second cell: " + secondCell[0] + " - " + secondCell[1]);
     }
 
     public int[][] getWinBoard() {

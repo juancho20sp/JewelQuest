@@ -154,7 +154,6 @@ public class JewelQuestGUI extends JFrame{
         resumeGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("RESUME");
                 resumeGame();
             }
         });
@@ -366,7 +365,11 @@ public class JewelQuestGUI extends JFrame{
      * Method for refreshing the menu
      */
     private void refresh(){
-        this.menuPanel.setBackground(this.config.getBackgroundColor());
+        this.remove(menuPanel);
+        this.revalidate();
+        this.repaint();
+
+        this.prepareElements();
     }
 
     public boolean isMenuCreated() {
