@@ -28,6 +28,7 @@ public class GameBoard extends JPanel{
     private int width;
     private int height;
     private boolean isGameRunning;
+    private boolean firstCellSelected;
 
     private Random random;
 
@@ -55,6 +56,7 @@ public class GameBoard extends JPanel{
 
         gameRunning = true;
         this.setGameRunning(false);
+        this.setFirstCellSelected(false);
 
         // Random
         this.random = new Random();
@@ -112,8 +114,8 @@ public class GameBoard extends JPanel{
         this.restartButton = new JButton("Reiniciar juego");
 
         // Labels
-        this.movementsLabel = new JLabel("Movimientos: 0", SwingConstants.CENTER);
-        this.pointsLabel = new JLabel("Puntos: 0", SwingConstants.CENTER);
+        this.movementsLabel = new JLabel("Movimientos: " + logicBoard.getMovements(), SwingConstants.CENTER);
+        this.pointsLabel = new JLabel("Puntos: " + + logicBoard.getPoints(), SwingConstants.CENTER);
 
         // Actions
         this.createUpperPanelActions();
@@ -244,30 +246,83 @@ public class GameBoard extends JPanel{
         board[x][y].addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                deleteJewel(e);
+                //deleteJewel(e);
+
+                handleClickOnJewel(e);
+
+
             }
         });
     }
 
     /**
-     * Method for deleting jewels
-     * @param event The event that triggered the action
+     * Method for capturing the click event on each jewel
+     * @param event The click event
      */
-    private void deleteJewel(MouseEvent event){
+    private void handleClickOnJewel(MouseEvent event){
+        int[] position = new int[2];
+
+
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if(board[i][j] == event.getSource()){
-                    logicBoard.blackClicked(i, j, logicBoard.getBoard()[i][j]);
+                    position[0] = i;
+                    position[1] = j;
+
+                    if(!this.isFirstCellSelected()){
+                        logicBoard.setFirstCell(position);
+                        logicBoard.turnBlack(position[0], position[1]);
+
+                        this.setFirstCellSelected(true);
+                    } else {
+                        logicBoard.setSecondCell(position);
+                        logicBoard.resetBoard();
+
+                        this.switchJewels();
+                        this.setFirstCellSelected(false);
+                    }
                 }
             }
-
         }
 
         this.refresh();
-
-        System.out.println(logicBoard.jewelsToDestroy());
     }
 
+    /**
+     * Method for switching positions
+     */
+    private void switchJewels(){
+        if (logicBoard.verifyAdjacency()){
+            // Switch positions
+            logicBoard.switchPositions();
+
+            // Validate possible affected cells
+            this.deleteJewel(logicBoard.getSecondCell()[0], logicBoard.getSecondCell()[1]);
+
+        } else {
+            JOptionPane.showMessageDialog(null, JewelQuestException.NON_ADJACENT_CELLS);
+        }
+        System.out.println("Adyacentes: " + logicBoard.verifyAdjacency());
+
+        this.refresh();
+    }
+
+
+    /**
+     * Method for deleting jewels
+     * @param i 'X' position of the main jewel
+     * @param j 'Y' position of the main jewel
+     */
+    private void deleteJewel(int i, int j){
+        logicBoard.blackClicked(i, j, logicBoard.getBoard()[i][j]);
+
+        this.refresh();
+    }
+
+
+    /**
+     * Method for setting the first position to switch
+     */
 
 
     /**
@@ -275,17 +330,23 @@ public class GameBoard extends JPanel{
      * @return
      */
     private void refresh(){
-        this.upperPanel.setBackground(this.config.getBackgroundColor());
-        repaint();
-
-        //remove(upperPanel);
+        remove(upperPanel);
         remove(boardPanel);
+
         //this.createUpperPanel();
-        this.createGameBoardPanel();
+
+        //this.createGameBoardPanel();
+        this.prepareElementsBoard();
         repaint();
+        this.movementsLabel = new JLabel("test");
+
+        //this.upperPanel.setBackground(this.config.getBackgroundColor());
+        //repaint();
+
+//        repaint();
 
 
-        this.boardPanel.setBackground(this.config.getBackgroundColor());
+       // this.boardPanel.setBackground(this.config.getBackgroundColor());
     }
 
     /**
@@ -312,5 +373,13 @@ public class GameBoard extends JPanel{
 
     public void setGameRunning(boolean gameRunning) {
         isGameRunning = gameRunning;
+    }
+
+    public boolean isFirstCellSelected() {
+        return firstCellSelected;
+    }
+
+    public void setFirstCellSelected(boolean firstCellSelected) {
+        this.firstCellSelected = firstCellSelected;
     }
 }

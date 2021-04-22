@@ -6,10 +6,19 @@ import java.util.Random;
 public class LogicGameBoard {
     private int width;
     private int height;
+
+    private int[] firstCell;
+    private int[] secondCell;
+
+    private int movements = 0;
+    private int points = 0;
+
     private int[][] board;
     private int[][] boardCopy;
 
     private Random random;
+
+
 
     /**
      * Constructor fot the logicGameBoard class
@@ -108,6 +117,99 @@ public class LogicGameBoard {
     }
 
     /**
+     * Method for deleting similar and left jewels
+     * @param px 'X' position of the jewel
+     * @param py 'Y' position of the jewel
+     * @param jewelType Type of the jewel
+     */
+    public void deleteLeftJewels(int px, int py, int jewelType){
+        // The jewels to delete will turn black
+        if (jewelType != -1){
+            board[px][py] = -1;
+        }
+
+        // If the color is black, delete the jewel
+        /*if (jewelType == -1){
+            board[px][py] = -2;
+        }*/
+
+        // Left
+        if ((px > 0) && board[px -1][py] == jewelType){
+            deleteLeftJewels(px - 1, py, jewelType);
+        }
+    }
+
+    /**
+     * Method for deleting similar and right jewels
+     * @param px 'X' position of the jewel
+     * @param py 'Y' position of the jewel
+     * @param jewelType Type of the jewel
+     */
+    public void deleteRightJewels(int px, int py, int jewelType){
+        // The jewels to delete will turn black
+        if (jewelType != -1){
+            board[px][py] = -1;
+        }
+
+        // If the color is black, delete the jewel
+        /*if (jewelType == -1){
+            board[px][py] = -2;
+        }*/
+
+        // Right
+        if ((px < (this.width - 1)) && board[px + 1][py] == jewelType){
+            deleteRightJewels(px + 1, py, jewelType);
+        }
+    }
+
+    /**
+     * Method for deleting similar and upper jewels
+     * @param px 'X' position of the jewel
+     * @param py 'Y' position of the jewel
+     * @param jewelType Type of the jewel
+     */
+    public void deleteUpperJewels(int px, int py, int jewelType){
+        // The jewels to delete will turn black
+        if (jewelType != -1){
+            board[px][py] = -1;
+        }
+
+        // If the color is black, delete the jewel
+        /*if (jewelType == -1){
+            board[px][py] = -2;
+        }*/
+
+        // Up
+        if ((py > 0) && board[px][py - 1] == jewelType){
+            deleteUpperJewels(px, py - 1, jewelType);
+        }
+    }
+
+    /**
+     * Method for deleting similar and lower jewels
+     * @param px 'X' position of the jewel
+     * @param py 'Y' position of the jewel
+     * @param jewelType Type of the jewel
+     */
+    public void deleteLowerJewels(int px, int py, int jewelType){
+        // The jewels to delete will turn black
+        if (jewelType != -1){
+            board[px][py] = -1;
+        }
+
+        // If the color is black, delete the jewel
+        /*if (jewelType == -1){
+            board[px][py] = -2;
+        }*/
+
+        // Down
+        if ((py < (this.height - 1)) && board[px][py + 1] == jewelType){
+            deleteLowerJewels(px, py + 1, jewelType);
+        }
+    }
+
+
+    /**
      * Method for counting the number of jewels affected
      */
     public int jewelsToDestroy(){
@@ -140,14 +242,108 @@ public class LogicGameBoard {
     }
 
     /**
+     * Method for turning one and only one jewel black
+     */
+    public void turnBlack(int x, int y){
+        if(this.jewelsToDestroy() != 1){
+            this.board[x][y] = -1;
+        } else {
+            this.resetBoard();
+            this.board[x][y] = -1;
+        }
+
+    }
+
+    /**
+     * Method prepare for destroy
+     * @param x 'X' position of the jewel to be destroyed
+     * @param y 'Y' position of the jewell to be destroyed
+     */
+    private void prepareForDestroy(int x, int y){
+        this.board[x][y] = -1;
+    }
+
+    /**
+     * Method for verifying if the cells are adjacent
+     * @return true if the cells are next to each other, false otherwise
+     */
+    public boolean verifyAdjacency(){
+        int[] first = this.getFirstCell();
+        int[] second = this.getSecondCell();
+
+        int xDiff = Math.abs(second[0] - first[0]);
+        int yDiff = Math.abs(second[1] - first[1]);
+
+        return (xDiff == 1 || yDiff == 1) && xDiff != yDiff && (xDiff < 2) && (yDiff < 2);
+    }
+
+    /**
+     * Method for switching jewels
+     */
+    public void switchPositions(){
+        int[] first = this.getFirstCell();
+        int[] second = this.getSecondCell();
+
+        this.board[first[0]][first[1]] = this.getBoardCopy()[second[0]][second[1]];
+        this.board[second[0]][second[1]] = this.getBoardCopy()[first[0]][first[1]];
+
+        this.copyBoard();
+    }
+
+    /**
+     * Method for undo the switch positions
+     */
+    public void undoSwitchPositions(){
+        int[] first = this.getSecondCell();
+        int[] second = this.getFirstCell();
+
+        this.board[first[0]][first[1]] = this.getBoardCopy()[second[0]][second[1]];
+        this.board[second[0]][second[1]] = this.getBoardCopy()[first[0]][first[1]];
+
+        this.copyBoard();
+    }
+
+
+
+    /**
      * Is the black jewel clicked
      * @param x 'X' position of the click
      * @param y 'Y' position of the click
      * @param jewelType The jewel type
      */
     public void blackClicked(int x, int y, int jewelType){
+        // First jewel
+        int x1 = this.getFirstCell()[0];
+        int y1 = this.getFirstCell()[1];
+
+        //this.deleteJewels(x1, y1, this.board[x1][y1]);
+
+        /*this.deleteLeftJewels(x1, y1, this.board[x1][y1]);
+        this.deleteRightJewels(x1, y1, this.board[x1][y1]);
+        this.deleteUpperJewels(x1, y1, this.board[x1][y1]);
+        this.deleteLowerJewels(x1, y1, this.board[x1][y1]);*/
+
+        // Second jewel
+        int x2 = this.getSecondCell()[0];
+        int y2 = this.getSecondCell()[1];
+        this.deleteJewels(x2, y2, this.board[x2][y2]);
+        /*this.deleteLeftJewels(x2, y2, this.board[x2][y2]);
+        this.deleteRightJewels(x2, y2, this.board[x2][y2]);
+        this.deleteUpperJewels(x2, y2, this.board[x2][y2]);
+        this.deleteLowerJewels(x2, y2, this.board[x2][y2]);*/
+
+        this.printBoard();
+
         if (this.board[x][y] == -1){
+            System.out.println("To destroy: " + this.jewelsToDestroy());
             if (this.jewelsToDestroy() > 2){
+                // Points
+                this.setPoints(this.getPoints() + this.jewelsToDestroy());
+
+                // Movements
+                this.setMovements(this.getMovements() + 1);
+
+                // Delete
                 this.deleteJewels(x, y, -1);
 
                 // Make them fall
@@ -157,10 +353,17 @@ public class LogicGameBoard {
                 this.rePopulateBoard();
 
                 this.printBoard();
+
+                //System.out.println("Mov: " + this.getMovements());
+                //System.out.println("Pts: " + this.getPoints());
+            } else {
+                this.undoSwitchPositions();
+                //this.resetBoard();
+                this.printBoard();
             }
         } else {
             this.resetBoard();
-            this.deleteJewels(x, y, jewelType);
+            //this.deleteJewels(x, y, jewelType);
         }
     }
 
@@ -234,5 +437,40 @@ public class LogicGameBoard {
 
     private void setBoardCopy(int[][] boardCopy) {
         this.boardCopy = boardCopy;
+    }
+
+    public int getMovements() {
+        return movements;
+    }
+
+    public void setMovements(int movements) {
+        this.movements = movements;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int[] getFirstCell() {
+        return firstCell;
+    }
+
+    public void setFirstCell(int[] firstCell) {
+        this.firstCell = firstCell;
+
+        System.out.println("First cell: " + firstCell[0] + " - " + firstCell[1]);
+    }
+
+    public int[] getSecondCell() {
+        return secondCell;
+    }
+
+    public void setSecondCell(int[] secondCell) {
+        this.secondCell = secondCell;
+        System.out.println("Second cell: " + secondCell[0] + " - " + secondCell[1]);
     }
 }
