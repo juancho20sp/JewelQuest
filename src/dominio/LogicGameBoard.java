@@ -33,8 +33,10 @@ public class LogicGameBoard {
         this.width = width;
         this.height = height;
 
-        this.board = new int[width][height];
-        this.winBoard = new int[width][height];
+        System.out.println("columnas: " + this.width + " filas: " + this.height);
+
+        this.board = new int[height][width];
+        this.winBoard = new int[height][width];
         this.random = new Random();
 
         this.createBoard();

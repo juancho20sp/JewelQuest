@@ -22,8 +22,8 @@ public class GameBoard extends JPanel{
     private JLabel movementsLabel;
     private JLabel pointsLabel;
 
-    private int rows = 6;
-    private int cols = 6;
+    private int rows;
+    private int cols;
 
     private int width;
     private int height;
@@ -54,6 +54,13 @@ public class GameBoard extends JPanel{
 
         //this.mainPanel = new JPanel();
 
+        // Rows and cols
+        this.rows = this.config.getHeight();
+        this.cols = this.config.getWidth();
+
+        System.out.println("Height: " + this.config.getHeight());
+        System.out.println("width: " + this.config.getWidth());
+
         gameRunning = true;
         this.setGameRunning(false);
         this.setFirstCellSelected(false);
@@ -62,6 +69,7 @@ public class GameBoard extends JPanel{
         this.random = new Random();
 
         // Logic board
+        System.out.println("GUI filas: " + this.rows + " cols: " + this.cols);
         logicBoard = new LogicGameBoard(this.cols, this.rows);
 
         System.out.println("\n\n");
@@ -79,6 +87,10 @@ public class GameBoard extends JPanel{
      */
     public GameBoard(GameConfiguration config){
         this.config = config;
+
+        // Rows and cols
+        this.rows = this.config.getHeight();
+        this.cols = this.config.getWidth();
 
         new JPanel();
         this.prepareElementsBoard();
@@ -103,7 +115,6 @@ public class GameBoard extends JPanel{
 
     /**
      * Method for creating the upper panel
-     * @return
      */
     private void createUpperPanel(){
         // Panel
@@ -129,7 +140,6 @@ public class GameBoard extends JPanel{
 
     /**+
      * Method for adding actions to the upper panel buttons
-     * @return
      */
     private void createUpperPanelActions(){
         // Main menu
@@ -200,11 +210,13 @@ public class GameBoard extends JPanel{
         int boxHeight = (this.height - 40) / this.rows;
 
         // Layout
-        this.boardPanel.setLayout(null);
+        this.boardPanel.setLayout(new GridLayout(this.rows, this.cols));
 
         // Fill board
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
+                System.out.println(i + " - " + j);
+
                 // Select and add the jewel
                 try {
                     this.insertJewellToBoard(i, j, this.getJewel(logicBoard.getBoard()[i][j]));
@@ -213,8 +225,8 @@ public class GameBoard extends JPanel{
                 }
 
                 // Label config
-                board[i][j].setPreferredSize(new Dimension(boxWidth - 10, boxHeight - 10));
-                board[i][j].setBounds(i * boxWidth, j * boxHeight, boxWidth, boxHeight);
+                //board[i][j].setPreferredSize(new Dimension(boxWidth - 10, boxHeight - 10));
+               // board[i][j].setBounds(i * boxWidth, j * boxHeight, boxWidth, boxHeight);
 
                 // Add actions
                 this.addActionToButton(i, j);
@@ -237,7 +249,6 @@ public class GameBoard extends JPanel{
         switch(id){
             case -2:
                 return new EmptyJewel(config.getBackgroundColor());
-                //return new BlackJewel();
             case -1:
                 return new BlackJewel();
             case 1:
@@ -274,11 +285,7 @@ public class GameBoard extends JPanel{
         board[x][y].addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //deleteJewel(e);
-
                 handleClickOnJewel(e);
-
-
             }
         });
     }
@@ -354,15 +361,21 @@ public class GameBoard extends JPanel{
      */
     private void refresh(){
         //remove(upperPanel);
-        remove(boardPanel);
+        //remove(boardPanel);
+        removeAll();
+        revalidate();
+        repaint();
 
-        this.createUpperPanel();
+        //this.boardPanel.invalidate();
+        //this.boardPanel.validate();
+        //this.createUpperPanel();
 
         //this.createUpperPanelLabels();
         //this.addElementsToUpperPanel();
-        this.createGameBoardPanel();
-        //this.prepareElementsBoard();
-        repaint();
+        //this.createGameBoardPanel();
+        //this.boardPanel.setLayout(new GridLayout(this.rows, this.cols));
+        this.prepareElementsBoard();
+        //repaint();
         //this.movementsLabel = new JLabel("test");
 
         //this.upperPanel.setBackground(this.config.getBackgroundColor());
