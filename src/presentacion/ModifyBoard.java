@@ -11,6 +11,7 @@ public class ModifyBoard extends JPanel{
     private JPanel configPanel;
     private JLabel title;
     private JButton colorButton;
+    private JButton sizeButton;
     private JButton goBackButton;
     private JFrame frame;
 
@@ -51,6 +52,7 @@ public class ModifyBoard extends JPanel{
 
         // Buttons
         this.colorButton = new JButton("Seleccionar color de fondo");
+        this.sizeButton = new JButton("Cambiar el tamaño del tablero");
         this.goBackButton = new JButton("Volver al menú principal");
 
         // Actions
@@ -59,6 +61,7 @@ public class ModifyBoard extends JPanel{
         // Add
         this.configPanel.add(this.title);
         this.configPanel.add(this.colorButton);
+        this.configPanel.add(this.sizeButton);
         this.configPanel.add(this.goBackButton);
 
     }
@@ -71,6 +74,13 @@ public class ModifyBoard extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectColor();
+            }
+        });
+
+        this.sizeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changeDimensions();
             }
         });
 
@@ -90,6 +100,23 @@ public class ModifyBoard extends JPanel{
         this.config.setBackgroundColor(chooser.showDialog(null, "Seleccione un color", Color.ORANGE));
 
         this.refresh();
+    }
+
+    /**
+     * Method for selecting new dimensions for the board
+     */
+    private void changeDimensions(){
+        int rows = 0;
+        int cols = 0;
+
+        try {
+            rows = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el número de filas: "));
+            cols = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el número de columnas: "));
+
+            this.config.setHeight(rows);
+            this.config.setWidth(cols);
+        } catch (Exception e){}
+
     }
 
     /**

@@ -45,7 +45,7 @@ public class JewelQuestGUI extends JFrame{
         cards = new JPanel(new CardLayout());
 
         // Config
-        this.config = new GameConfiguration(Color.ORANGE, 4, 4);
+        this.config = new GameConfiguration(Color.ORANGE, 6, 6);
 
         this.prepareElements();
     }

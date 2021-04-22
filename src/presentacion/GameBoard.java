@@ -287,6 +287,8 @@ public class GameBoard extends JPanel{
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if(board[i][j] == event.getSource()){
+                    System.out.println("Click: " + (this.rows - i - 1) + " - " + j);
+                    //position[0] = this.rows - i - 1;
                     position[0] = i;
                     position[1] = j;
 

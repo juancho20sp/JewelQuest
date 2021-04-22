@@ -279,11 +279,13 @@ public class LogicGameBoard {
                 // Verify win board
                 winner = this.verifyWinBoard();
 
+                this.printBoard();
+
                 // Make them fall
                 this.makeThemFall();
 
                 // New Jewels
-                this.rePopulateBoard();
+                //this.rePopulateBoard();
 
             } else {
                 this.undoSwitchPositions();
@@ -311,16 +313,31 @@ public class LogicGameBoard {
      * Method for letting the upper jewels down
      */
     private void makeThemFall(){
+        System.out.println("Height: " + this.height);
+        System.out.println("Weight: " + this.width);
+        this.printBoard();
+
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                this.board[i][j] = this.board[this.height -i - 1][j];
+            }
+        }
+
         for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
                 for (int k = 0; k < this.height; k++) {
                     if (k > 0 && board[j][k] == -2){
-                        board[j][k] = board[j][k-1];
-                        board[j][k-1] = -2;
+                        this.board[j][k] = this.board[j][k-1];
+                        this.board[j][k-1] = -2;
                     }
                 }
             }
         }
+
+        System.out.println();
+        this.printBoard();
+
+
     }
 
     /**
